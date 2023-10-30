@@ -10,7 +10,7 @@ verbosity = 1
 gas_reports = ["*"]
 optimize = true
 optimizer_runs = 1_000_000
-via-ir = false
+via-ir = true
 ffi = false
 fs_permissions = []
 
