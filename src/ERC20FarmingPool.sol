@@ -114,7 +114,7 @@ abstract contract ERC20FarmingPool is Ownable, ERC20 {
         uint256 reward = _makeInfo().startFarming(amount, period);
         emit RewardUpdated(reward, period);
 
-        SafeTransferLib.safeTransferFrom(stakingToken, msg.sender, address(this), amount);
+        SafeTransferLib.safeTransferFrom(rewardsToken, _distributor, address(this), amount);
     }
 
     /**
@@ -124,7 +124,7 @@ abstract contract ERC20FarmingPool is Ownable, ERC20 {
         uint256 leftover = _makeInfo().stopFarming();
         emit RewardUpdated(0, 0);
         if (leftover > 0) {
-            SafeTransferLib.safeTransfer(stakingToken, msg.sender, leftover);
+            SafeTransferLib.safeTransfer(rewardsToken, _distributor, leftover);
         }
     }
 
