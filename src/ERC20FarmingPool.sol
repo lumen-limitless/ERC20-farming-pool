@@ -135,17 +135,26 @@ abstract contract ERC20FarmingPool is Ownable, ERC20 {
         return _makeInfo().farmed(account, balanceOf(account));
     }
 
+    /**
+     * @notice Allows the account to deposit the staking token
+     */
     function deposit(uint256 amount) public virtual {
         _mint(msg.sender, amount);
         if (balanceOf(msg.sender) > _MAX_BALANCE) revert MaxBalanceExceeded();
         SafeTransferLib.safeTransferFrom(stakingToken, msg.sender, address(this), amount);
     }
 
+    /**
+     * @notice Allows the account to withdraw the staking token
+     */
     function withdraw(uint256 amount) public virtual {
         _burn(msg.sender, amount);
         SafeTransferLib.safeTransfer(stakingToken, msg.sender, amount);
     }
 
+    /**
+     * @notice Allows the account to claim the rewards
+     */
     function claim() public virtual {
         uint256 amount = _makeInfo().claim(msg.sender, balanceOf(msg.sender));
         if (amount > 0) {
@@ -153,11 +162,17 @@ abstract contract ERC20FarmingPool is Ownable, ERC20 {
         }
     }
 
+    /**
+     * @notice Allows the account to exit the farming, simultaneously withdrawing and claiming rewards
+     */
     function exit() public virtual {
         withdraw(balanceOf(msg.sender));
         claim();
     }
 
+    /**
+     * @notice Allows the distributor to rescue funds
+     */
     function rescueFunds(address token, uint256 amount) public virtual onlyDistributor {
         if (token == address(0)) {
             SafeTransferLib.forceSafeTransferETH(_distributor, amount);
